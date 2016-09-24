@@ -1,6 +1,6 @@
-#### Skin Helper Service Color Picker
-# script.skin.helper.colorpicker
-# A Color picker to be used by Kodi skins
+# Skin Helper Service Color Picker
+### script.skin.helper.colorpicker
+### A Color picker to be used by Kodi skins
 
 Usage: see below
 
@@ -8,12 +8,15 @@ Usage: see below
 ```
 RunScript(script.skin.helper.colorpicker,action=colorpicker,skinstring=XXX)
 ```
-This command will open the color picker of the script. After the user selected a color, the color will be stored in the skin string. Required parameters:
-- skinstring: Skin String inwhich the value of the color (ARGB) will be stored.
+This command will open the color picker of the script. After the user selected a color, the color will be stored in the skin string. 
+
+
+Required parameter:
+skinstring: Skin String inwhich the value of the color (ARGB) will be stored.
 
 In your skin you can just use the skin string to color a control, example: <textcolor>$INFO[Skin.String(defaultLabelColor)]</textcolor>
 
-Notes:
+####Notes:
 
 
 1) If you want to display the name of the selected color, add a prefix .name to your skin string.
