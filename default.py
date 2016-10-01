@@ -33,7 +33,7 @@ def waitForSkinShortcutsWindow():
 #MAIN ENTRY POINT    
 params = getParams()
 
-if params and params.get("ACTION","").upper() == "COLORPICKER":
+if params:
     colorPicker = colorpicker.ColorPicker("script-skin_helper_service-ColorPicker.xml", ADDON_PATH, "Default", "1080i")
     colorPicker.skinString = params.get("SKINSTRING","")
     colorPicker.winProperty = params.get("WINPROPERTY","")

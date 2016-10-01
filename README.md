@@ -6,7 +6,7 @@ Usage: see below
 
 
 ```
-RunScript(script.skin.helper.colorpicker,action=colorpicker,skinstring=XXX)
+RunScript(script.skin.helper.colorpicker,skinstring=XXX)
 ```
 This command will open the color picker of the script. After the user selected a color, the color will be stored in the skin string. 
 
@@ -29,7 +29,7 @@ make sure to include script-skin_helper_service-ColorPicker.xml in your skin and
 3) If you want to specify the header title of the color picker, 
 make sure to include a label with ID 1 in the XML and add the header= parameter when you launch the script.
 
-For example: RunScript(script.skin.helper.colorpicker,action=colorpicker,skinstring=MySkinString,header=Set the OSD Foreground Color)
+For example: RunScript(script.skin.helper.colorpicker,skinstring=MySkinString,header=Set the OSD Foreground Color)
 
 4) By default the colorpicker will provide a list of available colors.
 If you want to provide that list yourself, create a file "colors.xml" in skin\extras\colors\colors.xml
@@ -41,12 +41,12 @@ See the default colors file in the script's location, subfolder resources\colors
 ##### Set a skinshortcuts property with the color
 If you want to set a Window(home) Property instead of a skin settings:
 
-RunScript(script.skin.helper.colorpicker,action=colorpicker,winproperty=XXX)
+RunScript(script.skin.helper.colorpicker,winproperty=XXX)
 
 If you want to use the color picker to store the color in a shortcut-property from the skinshortcuts script, 
 include a button in your script-skinshortcuts.xml with this onclick-action:
 
-RunScript(script.skin.helper.colorpicker,action=colorpicker,shortcutproperty=XXX)
+RunScript(script.skin.helper.colorpicker,shortcutproperty=XXX)
 
 
 ##### Multiple color palettes
@@ -68,6 +68,6 @@ If you have specified multiple palettes you can use a button with ID 3030 to swi
 Also it is possible to launch the color picker with a specific palette, in that case supply the palette= parameter when you open the picker, for example:
 
 ```
-RunScript(script.skin.helper.colorpicker,action=colorpicker,skinstring=MySkinString,palette=mypalette1)
+RunScript(script.skin.helper.colorpicker,skinstring=MySkinString,palette=mypalette1)
 ```
 ________________________________________________________________________________________________________
