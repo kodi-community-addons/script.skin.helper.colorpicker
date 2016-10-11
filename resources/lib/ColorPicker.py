@@ -1,23 +1,17 @@
 from xml.dom.minidom import parse
 import xbmc, xbmcgui, xbmcaddon, xbmcvfs
 import os, math
+from PIL import Image
 
 ADDON = xbmcaddon.Addon()
 ADDON_ID = ADDON.getAddonInfo('id').decode("utf-8")
 ADDON_PATH = ADDON.getAddonInfo('path').decode("utf-8")
+COLORFILES_PATH = xbmc.translatePath("special://profile/addon_data/%s/colors/" %ADDON_ID).decode("utf-8")
+SKINCOLORFILES_PATH = xbmc.translatePath("special://profile/addon_data/%s/colors/" %xbmc.getSkinDir()).decode("utf-8")
+SKINCOLORFILE = xbmc.translatePath("special://skin/extras/colors/colors.xml").decode("utf-8")
 WINDOW = xbmcgui.Window(10000)
 
-#PIL fails on Android devices ?
-hasPilModule = True
-try:
-    from PIL import Image
-    im = Image.new("RGB", (1, 1))
-    del im
-except:
-    hasPilModule = False
-    logMsg("This platform doesn't support the PIL module !", xbmc.LOGERROR)
-    
-    
+   
 def logMsg(msg, level = xbmc.LOGDEBUG):
     if isinstance(msg, unicode):
         msg = msg.encode('utf-8')
@@ -49,6 +43,12 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
         self.buildColorsList()
         self.result = -1
         
+        #check paths
+        if xbmcvfs.exists( SKINCOLORFILE ) and not xbmcvfs.exists(SKINCOLORFILES_PATH):
+            xbmcvfs.mkdirs(SKINCOLORFILES_PATH)
+        if not xbmcvfs.exists(COLORFILES_PATH):
+            xbmcvfs.mkdirs(COLORFILES_PATH)
+        
     def addColorToList(self, colorname, colorstring):
         colorImageFile = self.createColorSwatchImage(colorstring)
         listitem = xbmcgui.ListItem(label=colorname, iconImage=colorImageFile)
@@ -59,11 +59,11 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
         colorImageFile = ""
         if colorstring:
             paths = []
-            paths.append(os.path.join(ADDON_PATH, 'resources', 'colors' ,colorstring + ".png"))
-            if xbmcvfs.exists( "special://skin/extras/colors/colors.xml" ):
-                paths.append(os.path.join(xbmc.translatePath("special://skin/extras/colors/").decode("utf-8") ,colorstring + ".png"))
+            paths.append("%s%s.png"%(COLORFILES_PATH,colorstring))
+            if xbmcvfs.exists( SKINCOLORFILE ):
+                paths.append( "%s%s.png"%(SKINCOLORFILES_PATH,colorstring) )
             for colorImageFile in paths:
-                if not xbmcvfs.exists(colorImageFile) and hasPilModule:
+                if not xbmcvfs.exists(colorImageFile):
                     try:
                         colorstring = colorstring.strip()
                         if colorstring[0] == '#': colorstring = colorstring[1:]
@@ -78,12 +78,12 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
     
     def buildColorsList(self):
         #prefer skin colors file
-        if xbmcvfs.exists( "special://skin/extras/colors/colors.xml" ):
-            colors_file = xbmc.translatePath("special://skin/extras/colors/colors.xml").decode("utf-8")
-            self.colorsPath = xbmc.translatePath("special://skin/extras/colors/").decode("utf-8")
+        if xbmcvfs.exists( SKINCOLORFILE ):
+            colors_file = SKINCOLORFILE
+            self.colorsPath = SKINCOLORFILES_PATH
         else:
             colors_file = os.path.join(ADDON_PATH, 'resources', 'colors','colors.xml' ).decode("utf-8")
-            self.colorsPath = os.path.join(ADDON_PATH, 'resources', 'colors' ).decode("utf-8")
+            self.colorsPath = COLORFILES_PATH
         
         doc = parse( colors_file )
         paletteListing = doc.documentElement.getElementsByTagName( 'palette' )
@@ -137,11 +137,11 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
         curvalue = ""
         curvalue_name = ""
         if self.skinString:
-            curvalue = xbmc.getInfoLabel("Skin.String(" + self.skinString + ')')
-            curvalue_name = xbmc.getInfoLabel("Skin.String(" + self.skinString + '.name)')
+            curvalue = xbmc.getInfoLabel("Skin.String(%s)" %self.skinString)
+            curvalue_name = xbmc.getInfoLabel("Skin.String(%s.name)" %self.skinString)
         if self.winProperty:
             curvalue = WINDOW.getProperty(self.winProperty)
-            curvalue_name = xbmc.getInfoLabel(self.winProperty + '.name)')
+            curvalue_name = xbmc.getInfoLabel('%s.name)' %self.winProperty)
         if curvalue:
             self.currentWindow.setProperty("colorstring", curvalue)
             if curvalue != curvalue_name:
@@ -193,7 +193,8 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
                 a, r, g, b = [int(n, 16) for n in (a, r, g, b)]
                 a = 100.0 * a / 255
                 self.getControl( 3015 ).setPercent( float(a) )
-        except: pass
+        except Exception:
+            pass
     
     def setColorSetting(self,restoreprevious=False):
         #save the selected color to the skin setting
@@ -265,7 +266,8 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
                 colorstringvalue = '%02x%02x%02x%02x' % color
                 self.currentWindow.setProperty("colorstring",colorstringvalue)
                 self.setColorSetting()
-            except: pass
+            except Exception: 
+                pass
             
         elif controlID == 3030:
             #change color palette
