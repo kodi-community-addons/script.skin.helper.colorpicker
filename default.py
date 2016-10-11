@@ -9,7 +9,7 @@ ADDON_ID = ADDON.getAddonInfo('id').decode("utf-8")
 ADDON_PATH = ADDON.getAddonInfo('path').decode("utf-8")
 
 def getParams():
-    #extract the params from the called script path
+    '''extract the params from the called script path'''
     params = {}
     for arg in sys.argv:
         arg = arg.decode("utf-8")
@@ -22,8 +22,8 @@ def getParams():
             params[paramname.upper()] = paramvalue
     return params
     
-def waitForSkinShortcutsWindow():
-    #wait untill skinshortcuts is active window (because of any animations that may have been applied)
+def wait_for_skinshortcuts_window():
+    '''wait untill skinshortcuts is active window (because of any animations that may have been applied)'''
     for i in range(40):
         if not (xbmc.getCondVisibility("Window.IsActive(DialogSelect.xml) | Window.IsActive(script-skin_helper_service-ColorPicker.xml) | Window.IsActive(DialogKeyboard.xml)")):
             break
@@ -35,17 +35,17 @@ params = getParams()
 
 if params:
     colorPicker = colorpicker.ColorPicker("script-skin_helper_service-ColorPicker.xml", ADDON_PATH, "Default", "1080i")
-    colorPicker.skinString = params.get("SKINSTRING","")
-    colorPicker.winProperty = params.get("WINPROPERTY","")
-    colorPicker.activePalette = params.get("PALETTE","")
-    colorPicker.headerLabel = params.get("HEADER","")
+    colorPicker.skinstring = params.get("SKINSTRING","")
+    colorPicker.win_property = params.get("WINPROPERTY","")
+    colorPicker.active_palette = params.get("PALETTE","")
+    colorPicker.header_label = params.get("HEADER","")
     propname = params.get("SHORTCUTPROPERTY","")
-    colorPicker.shortcutProperty = propname
+    colorPicker.shortcut_property = propname
     colorPicker.doModal()
     
     #special action when we want to set our chosen color into a skinshortcuts property
     if propname and not isinstance(colorPicker.result, int):
-        mainmodule.waitForSkinShortcutsWindow()
+        wait_for_skinshortcuts_window()
         xbmc.sleep(400)
         currentWindow = xbmcgui.Window( xbmcgui.getCurrentWindowDialogId() )
         currentWindow.setProperty("customProperty", propname)
