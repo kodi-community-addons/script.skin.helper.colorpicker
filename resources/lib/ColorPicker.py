@@ -13,15 +13,50 @@ WINDOW = xbmcgui.Window(10000)
 
 
 def log_msg(msg, level = xbmc.LOGDEBUG):
+    '''log message to kodi log'''
     if isinstance(msg, unicode):
         msg = msg.encode('utf-8')
     xbmc.log("Skin Helper Service ColorPicker --> %s" %msg, level=level)
 
 def try_encode(text, encoding="utf-8"):
+    '''helper method'''
     try:
         return text.encode(encoding,"ignore")
     except Exception:
         return text
+
+def create_color_swatch_image(colorstring):
+    '''helper method to generate a colorized image using PIL'''
+    color_image_file = ""
+    if colorstring:
+        paths = []
+        paths.append("%s%s.png"%(COLORFILES_PATH,colorstring))
+        if xbmcvfs.exists( SKINCOLORFILE ):
+            paths.append( "%s%s.png"%(SKINCOLORFILES_PATH,colorstring) )
+        for color_image_file in paths:
+            if not xbmcvfs.exists(color_image_file):
+                try:
+                    colorstring = colorstring.strip()
+                    if colorstring[0] == '#':
+                        colorstring = colorstring[1:]
+                    a, r, g, b = colorstring[:2], colorstring[2:4], colorstring[4:6], colorstring[6:]
+                    a, r, g, b = [int(n, 16) for n in (a, r, g, b)]
+                    color = (r, g, b, a)
+                    im = Image.new("RGBA", (16, 16), color)
+                    im.save(color_image_file)
+                except Exception:
+                    log_msg("ERROR in create_color_swatch_image for colorstring: %s" %colorstring, xbmc.LOGERROR)
+    return color_image_file
+
+def get_colors_from_xml(xmlelement):
+        items = []
+        listing = xmlelement.getElementsByTagName( 'color' )
+        for color in listing:
+            name = color.attributes[ 'name' ].nodeValue.lower()
+            colorstring = color.childNodes [ 0 ].nodeValue.lower()
+            items.append( (name,colorstring) )
+        return items
+
 
 class ColorPicker(xbmcgui.WindowXMLDialog):
     '''
@@ -59,32 +94,10 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
             xbmcvfs.mkdirs(COLORFILES_PATH)
 
     def add_color_to_list(self, colorname, colorstring):
-        color_image_file = self.create_color_swatch_image(colorstring)
+        color_image_file = create_color_swatch_image(colorstring)
         listitem = xbmcgui.ListItem(label=colorname, iconImage=color_image_file)
         listitem.setProperty("colorstring",colorstring)
         self.colors_list.addItem(listitem)
-
-    def create_color_swatch_image(self, colorstring):
-        color_image_file = ""
-        if colorstring:
-            paths = []
-            paths.append("%s%s.png"%(COLORFILES_PATH,colorstring))
-            if xbmcvfs.exists( SKINCOLORFILE ):
-                paths.append( "%s%s.png"%(SKINCOLORFILES_PATH,colorstring) )
-            for color_image_file in paths:
-                if not xbmcvfs.exists(color_image_file):
-                    try:
-                        colorstring = colorstring.strip()
-                        if colorstring[0] == '#':
-                            colorstring = colorstring[1:]
-                        a, r, g, b = colorstring[:2], colorstring[2:4], colorstring[4:6], colorstring[6:]
-                        a, r, g, b = [int(n, 16) for n in (a, r, g, b)]
-                        color = (r, g, b, a)
-                        im = Image.new("RGBA", (16, 16), color)
-                        im.save(color_image_file)
-                    except Exception:
-                        log_msg("ERROR in create_color_swatch_image for colorstring: %s" %colorstring, xbmc.LOGERROR)
-        return color_image_file
 
     def build_colors_list(self):
         '''
@@ -106,21 +119,12 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
             #we have multiple palettes specified
             for item in palette_listing:
                 palette_name = item.attributes[ 'name' ].nodeValue
-                self.all_colors[palette_name] = self.get_colors_from_xml(item)
+                self.all_colors[palette_name] = get_colors_from_xml(item)
                 self.all_palettes.append(palette_name)
         else:
             #we do not have multiple palettes
-            self.all_colors["all"] = self.get_colors_from_xml(doc.documentElement)
+            self.all_colors["all"] = get_colors_from_xml(doc.documentElement)
             self.all_palettes.append("all")
-
-    def get_colors_from_xml(self, xmlelement):
-        items = []
-        listing = xmlelement.getElementsByTagName( 'color' )
-        for color in listing:
-            name = color.attributes[ 'name' ].nodeValue.lower()
-            colorstring = color.childNodes [ 0 ].nodeValue.lower()
-            items.append( (name,colorstring) )
-        return items
 
     def load_colors_palette(self,palette_name=""):
         self.colors_list.reset()
@@ -186,9 +190,11 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
         xbmc.executebuiltin( "Dialog.Close(busydialog)" )
 
     def onFocus(self, controlId):
+        '''builtin kodi event'''
         pass
 
     def onAction(self, action):
+        '''builtin kodi event'''
         if action.getId() in ( 9, 10, 92, 216, 247, 257, 275, 61467, 61448, ):
             #exit or back called from kodi
             self.save_color_setting(restoreprevious=True)
@@ -217,9 +223,9 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
         else:
             colorname = self.current_window.getProperty("colorname")
             colorstring = self.current_window.getProperty("colorstring")
-        if not colorname: 
+        if not colorname:
             colorname = colorstring
-        self.create_color_swatch_image(colorstring)
+        create_color_swatch_image(colorstring)
         if self.skinstring and (not colorstring or colorstring == "None"):
             xbmc.executebuiltin("Skin.SetString(%s.name, %s)"
                 %(try_encode(self.skinstring), try_encode(ADDON.getLocalizedString(32013))))
@@ -240,7 +246,7 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
             WINDOW.setProperty(self.win_property + ".name", colorname)
 
     def onClick(self, controlID):
-
+        '''builtin kodi event - handle onclick and execute correct action'''
         if controlID == 3110:
             #color clicked
             item =  self.colors_list.getSelectedItem()
