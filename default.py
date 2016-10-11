@@ -8,9 +8,9 @@ ADDON = xbmcaddon.Addon()
 ADDON_ID = ADDON.getAddonInfo('id').decode("utf-8")
 ADDON_PATH = ADDON.getAddonInfo('path').decode("utf-8")
 
-def get_params():
-    '''extract the params from the called script path'''
-    params = {}
+def get__params():
+    '''extract the _params from the called script path'''
+    _params = {}
     for arg in sys.argv:
         arg = arg.decode("utf-8")
         if arg == 'script.skin.helper.colorpicker' or arg == 'default.py':
@@ -18,9 +18,9 @@ def get_params():
         elif "=" in arg:
             paramname = arg.split('=')[0]
             paramvalue = arg.replace(paramname+"=","")
-            params[paramname] = paramvalue
-            params[paramname.upper()] = paramvalue
-    return params
+            _params[paramname] = paramvalue
+            _params[paramname.upper()] = paramvalue
+    return _params
 
 def wait_for_skinshortcuts_window():
     '''wait untill skinshortcuts is active window (because of any animations that may have been applied)'''
@@ -32,14 +32,14 @@ def wait_for_skinshortcuts_window():
 
 #MAIN ENTRY POINT
 if __name__ == "__main__":
-    params = get_params()
-    if params:
+    _params = get__params()
+    if _params:
         colorPicker = colorpicker.ColorPicker("script-skin_helper_service-ColorPicker.xml", ADDON_PATH, "Default", "1080i")
-        colorPicker.skinstring = params.get("SKINSTRING","")
-        colorPicker.win_property = params.get("WINPROPERTY","")
-        colorPicker.active_palette = params.get("PALETTE","")
-        colorPicker.header_label = params.get("HEADER","")
-        propname = params.get("SHORTCUTPROPERTY","")
+        colorPicker.skinstring = _params.get("SKINSTRING","")
+        colorPicker.win_property = _params.get("WINPROPERTY","")
+        colorPicker.active_palette = _params.get("PALETTE","")
+        colorPicker.header_label = _params.get("HEADER","")
+        propname = _params.get("SHORTCUTPROPERTY","")
         colorPicker.shortcut_property = propname
         colorPicker.doModal()
 
