@@ -58,14 +58,12 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
         if not xbmcvfs.exists(COLORFILES_PATH):
             xbmcvfs.mkdirs(COLORFILES_PATH)
 
-    @classmethod
     def add_color_to_list(self, colorname, colorstring):
         color_image_file = self.create_color_swatch_image(colorstring)
         listitem = xbmcgui.ListItem(label=colorname, iconImage=color_image_file)
         listitem.setProperty("colorstring",colorstring)
         self.colors_list.addItem(listitem)
 
-    @classmethod
     def create_color_swatch_image(self, colorstring):
         color_image_file = ""
         if colorstring:
@@ -88,7 +86,6 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
                         log_msg("ERROR in create_color_swatch_image for colorstring: %s" %colorstring, xbmc.LOGERROR)
         return color_image_file
 
-    @staticmethod
     def build_colors_list(self):
         '''
             build the list of colorswatches we want to display, check if skinner
@@ -116,8 +113,7 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
             self.all_colors["all"] = self.get_colors_from_xml(doc.documentElement)
             self.all_palettes.append("all")
 
-    @classmethod
-    def get_colors_from_xml(self,xmlelement):
+    def get_colors_from_xml(self, xmlelement):
         items = []
         listing = xmlelement.getElementsByTagName( 'color' )
         for color in listing:
@@ -126,7 +122,6 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
             items.append( (name,colorstring) )
         return items
 
-    @classmethod
     def load_colors_palette(self,palette_name=""):
         self.colors_list.reset()
         if not palette_name:
@@ -146,7 +141,6 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
         xbmc.executebuiltin( "ActivateWindow(busydialog)" )
         self.current_window = xbmcgui.Window( xbmcgui.getCurrentWindowDialogId() )
         self.colors_list = self.getControl(3110)
-
         #set header_label
         try:
             self.getControl(1).setLabel(self.header_label)
@@ -203,7 +197,6 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
     def close_dialog(self):
         self.close()
 
-    @classmethod
     def set_opacity_clider(self):
         '''set the opacity slider based on the alpha channel in the ARGB colorstring'''
         colorstring = self.current_window.getProperty("colorstring")
@@ -216,7 +209,6 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
         except Exception:
             pass
 
-    @classmethod
     def save_color_setting(self,restoreprevious=False):
         '''save the selected color to the skin setting or window property'''
         if restoreprevious:
