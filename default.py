@@ -9,7 +9,7 @@ ADDON_ID = ADDON.getAddonInfo('id').decode("utf-8")
 ADDON_PATH = ADDON.getAddonInfo('path').decode("utf-8")
 
 class Main(object):
-
+    '''Main entrypoint for our colorpicker'''
     def __init__(self):
         params = self.get_params()
         if params:

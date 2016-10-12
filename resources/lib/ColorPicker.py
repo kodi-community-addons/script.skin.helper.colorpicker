@@ -156,6 +156,7 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
             self.close_dialog()
 
     def close_dialog(self):
+        '''close our xml window'''
         self.close()
 
     def set_opacity_clider(self):
@@ -295,7 +296,8 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
                         img.save(color_image_file)
                         del img
                     except Exception:
-                        self.log_msg("ERROR in self.create_color_swatch_image for colorstring: %s" %colorstring, xbmc.LOGERROR)
+                        self.log_msg("ERROR in self.create_color_swatch_image for colorstring: %s"
+                            %colorstring, xbmc.LOGERROR)
         return color_image_file
 
     @staticmethod
