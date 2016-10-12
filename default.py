@@ -4,8 +4,8 @@
 import xbmc,xbmcgui,xbmcaddon
 import resources.lib.ColorPicker as cp
 
-ADDON = xbmcaddon.Addon()
-ADDON_ID = ADDON.getAddonInfo('id').decode("utf-8")
+ADDON_ID = "script.skin.helper.colorpicker"
+ADDON = xbmcaddon.Addon(ADDON_ID)
 ADDON_PATH = ADDON.getAddonInfo('path').decode("utf-8")
 
 class Main(object):

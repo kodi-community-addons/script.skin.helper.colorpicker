@@ -25,7 +25,7 @@ def try_encode(text, encoding="utf-8"):
     except Exception:
         return text
 #######################################################
-        
+
 
 class ColorPicker(xbmcgui.WindowXMLDialog):
     '''
