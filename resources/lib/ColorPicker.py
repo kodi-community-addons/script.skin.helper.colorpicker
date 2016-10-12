@@ -3,13 +3,29 @@ import xbmc, xbmcgui, xbmcaddon, xbmcvfs
 import os, math
 from PIL import Image
 
-ADDON = xbmcaddon.Addon()
-ADDON_ID = ADDON.getAddonInfo('id').decode("utf-8")
+ADDON_ID = "script.skin.helper.colorpicker"
+ADDON = xbmcaddon.Addon(ADDON_ID)
 ADDON_PATH = ADDON.getAddonInfo('path').decode("utf-8")
 COLORFILES_PATH = xbmc.translatePath("special://profile/addon_data/%s/colors/" %ADDON_ID).decode("utf-8")
 SKINCOLORFILES_PATH = xbmc.translatePath("special://profile/addon_data/%s/colors/" %xbmc.getSkinDir()).decode("utf-8")
 SKINCOLORFILE = xbmc.translatePath("special://skin/extras/colors/colors.xml").decode("utf-8")
 WINDOW = xbmcgui.Window(10000)
+
+### HELPERS ###########################################
+def log_msg(msg, level = xbmc.LOGDEBUG):
+    '''log message to kodi log'''
+    if isinstance(msg, unicode):
+        msg = msg.encode('utf-8')
+    xbmc.log("Skin Helper Service ColorPicker --> %s" %msg, level=level)
+
+def try_encode(text, encoding="utf-8"):
+    '''helper method'''
+    try:
+        return text.encode(encoding,"ignore")
+    except Exception:
+        return text
+#######################################################
+        
 
 class ColorPicker(xbmcgui.WindowXMLDialog):
     '''
@@ -90,7 +106,7 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
         if palette_name != "all":
             self.current_window.setProperty("palettename",palette_name)
         if not self.all_colors.get(palette_name):
-            self.log_msg("No palette exists with name %s" %palette_name, xbmc.LOGERROR)
+            log_msg("No palette exists with name %s" %palette_name, xbmc.LOGERROR)
             return
         for item in self.all_colors[palette_name]:
             self.add_color_to_list(item[0], item[1])
@@ -184,19 +200,19 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
         self.create_color_swatch_image(colorstring)
         if self.skinstring and (not colorstring or colorstring == "None"):
             xbmc.executebuiltin("Skin.SetString(%s.name, %s)"
-                %(self.try_encode(self.skinstring), self.try_encode(ADDON.getLocalizedString(32013))))
+                %(try_encode(self.skinstring), try_encode(ADDON.getLocalizedString(32013))))
             xbmc.executebuiltin("Skin.SetString(%s, None)"
-                %self.try_encode(self.skinstring))
+                %try_encode(self.skinstring))
             xbmc.executebuiltin("Skin.Reset(%s.base)"
-                %self.try_encode(self.skinstring))
+                %try_encode(self.skinstring))
         elif self.skinstring and colorstring:
             xbmc.executebuiltin("Skin.SetString(%s.name, %s)"
-                %(self.try_encode(self.skinstring),self.try_encode(colorname)))
+                %(try_encode(self.skinstring),try_encode(colorname)))
             colorbase = "ff" + colorstring[2:]
             xbmc.executebuiltin("Skin.SetString(%s, %s)"
-                %(self.try_encode(self.skinstring),self.try_encode(colorstring)))
+                %(try_encode(self.skinstring),try_encode(colorstring)))
             xbmc.executebuiltin("Skin.SetString(%s.base, %s)"
-                %(self.try_encode(self.skinstring) ,self.try_encode(colorbase)))
+                %(try_encode(self.skinstring) ,try_encode(colorbase)))
         elif self.win_property:
             WINDOW.setProperty(self.win_property, colorstring)
             WINDOW.setProperty(self.win_property + ".name", colorname)
@@ -260,21 +276,6 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
             self.load_colors_palette(self.all_palettes[ret])
 
     @staticmethod
-    def log_msg(msg, level = xbmc.LOGDEBUG):
-        '''log message to kodi log'''
-        if isinstance(msg, unicode):
-            msg = msg.encode('utf-8')
-        xbmc.log("Skin Helper Service ColorPicker --> %s" %msg, level=level)
-
-    @staticmethod
-    def try_encode(text, encoding="utf-8"):
-        '''helper method'''
-        try:
-            return text.encode(encoding,"ignore")
-        except Exception:
-            return text
-
-    @staticmethod
     def create_color_swatch_image(colorstring):
         '''helper method to generate a colorized image using PIL'''
         color_image_file = ""
@@ -296,7 +297,7 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
                         img.save(color_image_file)
                         del img
                     except Exception:
-                        self.log_msg("ERROR in self.create_color_swatch_image for colorstring: %s"
+                        log_msg("ERROR in self.create_color_swatch_image for colorstring: %s"
                             %colorstring, xbmc.LOGERROR)
         return color_image_file
 
