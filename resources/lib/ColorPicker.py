@@ -156,7 +156,7 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
 
         #set opacity slider
         if self.current_window.getProperty("colorstring"):
-            self.set_opacity_clider()
+            self.set_opacity_slider()
 
         xbmc.executebuiltin( "Dialog.Close(busydialog)" )
 
@@ -175,7 +175,7 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
         '''close our xml window'''
         self.close()
 
-    def set_opacity_clider(self):
+    def set_opacity_slider(self):
         '''set the opacity slider based on the alpha channel in the ARGB colorstring'''
         colorstring = self.current_window.getProperty("colorstring")
         try:
@@ -225,7 +225,7 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
             colorstring = item.getProperty("colorstring")
             self.current_window.setProperty("colorstring",colorstring)
             self.current_window.setProperty("colorname",item.getLabel())
-            self.set_opacity_clider()
+            self.set_opacity_slider()
             self.current_window.setFocusId(3012)
             self.current_window.setProperty("color_chosen","true")
             self.save_color_setting()
@@ -236,7 +236,7 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
                 self.current_window.getProperty("colorstring"), type=xbmcgui.INPUT_ALPHANUM)
             self.current_window.setProperty("colorname", ADDON.getLocalizedString(32050))
             self.current_window.setProperty("colorstring", colorstring)
-            self.set_opacity_clider()
+            self.set_opacity_slider()
             self.save_color_setting()
         elif controlID == 3011:
             # none button
