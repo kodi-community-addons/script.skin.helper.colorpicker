@@ -1,7 +1,10 @@
 from xml.dom.minidom import parse
 import xbmc, xbmcgui, xbmcaddon, xbmcvfs
 import os, math
-from PIL import Image
+try:
+    from PIL import Image
+except ImportError:
+    import Image
 
 ADDON_ID = "script.skin.helper.colorpicker"
 ADDON = xbmcaddon.Addon(ADDON_ID)
