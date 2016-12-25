@@ -302,8 +302,7 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
             ret = xbmcgui.Dialog().select(ADDON.getLocalizedString(32141), self.all_palettes)
             self.load_colors_palette(self.all_palettes[ret])
 
-    @staticmethod
-    def create_color_swatch_image(colorstring):
+    def create_color_swatch_image(self, colorstring):
         '''helper method to generate a colorized image using PIL'''
         if not self.supports_pil:
             return ""
