@@ -1,10 +1,6 @@
 from xml.dom.minidom import parse
 import xbmc, xbmcgui, xbmcaddon, xbmcvfs
 import os, math
-try:
-    from PIL import Image
-except ImportError:
-    import Image
 
 ADDON_ID = "script.skin.helper.colorpicker"
 ADDON = xbmcaddon.Addon(ADDON_ID)
@@ -27,6 +23,32 @@ def try_encode(text, encoding="utf-8"):
         return text.encode(encoding,"ignore")
     except Exception:
         return text
+        
+def supports_pil():
+    ''' Imports the PIL modules and returns False if not supported'''
+
+    # prefer Pillow
+    try:
+        from PIL import Image
+        img = Image.new("RGB", (1, 1))
+        del img
+        return True
+    except Exception as exc:
+        log_exception(__name__, exc)
+        
+    # fallback to traditional PIL
+    try:
+        import Image
+        img = Image.new("RGB", (1, 1))
+        del img
+        return True
+    except Exception as exc:
+        log_exception(__name__, exc)
+    
+    # Log error in log and return False if none of the PIL modules worked
+    log_msg("Color swatches disabled - PIL is not supported on this device!", xbmc.LOGWARNING)
+    return False
+    
 #######################################################
 
 
@@ -51,6 +73,7 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
     all_colors = {}
     all_palettes = []
     active_palette = None
+    supports_pil = False
 
     def __init__(self, *args, **kwargs):
         xbmcgui.WindowXMLDialog.__init__(self, *args, **kwargs)
@@ -58,6 +81,7 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
         self.win = xbmcgui.Window( 10000 )
         self.build_colors_list()
         self.result = -1
+        self.supports_pil = supports_pil()
 
         #check paths
         if xbmcvfs.exists( SKINCOLORFILE ) and not xbmcvfs.exists(SKINCOLORFILES_PATH):
@@ -281,6 +305,8 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
     @staticmethod
     def create_color_swatch_image(colorstring):
         '''helper method to generate a colorized image using PIL'''
+        if not self.supports_pil:
+            return ""
         color_image_file = ""
         if colorstring:
             paths = []
