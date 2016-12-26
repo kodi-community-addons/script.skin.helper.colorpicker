@@ -324,9 +324,10 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
                         img = Image.new("RGBA", (16, 16), color)
                         img.save(color_image_file)
                         del img
-                    except Exception:
-                        log_msg("ERROR in self.create_color_swatch_image for colorstring: %s"
-                            %colorstring, xbmc.LOGERROR)
+                    except Exception as exc:
+                        log_exception(__name__, exc)
+                        log_msg("ERROR in self.create_color_swatch_image for colorstring %s - %s"
+                            %(colorstring, str(exc)), xbmc.LOGERROR)
         return color_image_file
 
     @staticmethod
