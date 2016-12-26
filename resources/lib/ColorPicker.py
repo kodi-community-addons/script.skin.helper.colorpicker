@@ -4,6 +4,7 @@ import xbmcgui
 import xbmcaddon
 import xbmcvfs
 import os
+import sys
 import math
 from traceback import format_exc
 
@@ -324,9 +325,9 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
         color_image_file = ""
         if colorstring:
             paths = []
-            paths.append("%s%s.png" % (COLORFILES_PATH, colorstring))
+            paths.append(u"%s%s.png" % (COLORFILES_PATH, colorstring))
             if xbmcvfs.exists(SKINCOLORFILE):
-                paths.append("%s%s.png" % (SKINCOLORFILES_PATH, colorstring))
+                paths.append(u"%s%s.png" % (SKINCOLORFILES_PATH, colorstring))
             for color_image_file in paths:
                 if not xbmcvfs.exists(color_image_file):
                     try:
