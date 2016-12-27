@@ -310,9 +310,6 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
 
     def create_color_swatch_image(self, colorstring):
         '''helper method to generate a colorized image using PIL'''
-        if not SUPPORTS_PIL:
-            return ""
-        color_image_file = ""
         if colorstring:
             paths = []
             paths.append(u"%s%s.png" % (COLORFILES_PATH, colorstring))
@@ -320,19 +317,24 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
                 paths.append(u"%s%s.png" % (SKINCOLORFILES_PATH, colorstring))
             for color_image_file in paths:
                 if not xbmcvfs.exists(color_image_file):
-                    try:
-                        colorstring = colorstring.strip()
-                        if colorstring[0] == '#':
-                            colorstring = colorstring[1:]
-                        a, r, g, b = colorstring[:2], colorstring[2:4], colorstring[4:6], colorstring[6:]
-                        a, r, g, b = [int(n, 16) for n in (a, r, g, b)]
-                        color = (r, g, b, a)
-                        img = Image.new("RGBA", (16, 16), color)
-                        img.save(color_image_file)
-                        del img
-                    except Exception as exc:
-                        log_exception(__name__, exc)
-
+                    if SUPPORTS_PIL:
+                        # create image with PIL
+                        try:
+                            colorstring = colorstring.strip()
+                            if colorstring[0] == '#':
+                                colorstring = colorstring[1:]
+                            a, r, g, b = colorstring[:2], colorstring[2:4], colorstring[4:6], colorstring[6:]
+                            a, r, g, b = [int(n, 16) for n in (a, r, g, b)]
+                            color = (r, g, b, a)
+                            img = Image.new("RGBA", (16, 16), color)
+                            img.save(color_image_file)
+                            del img
+                        except Exception as exc:
+                            log_exception(__name__, exc)
+                    else:
+                        # create image with online service if no pil support
+                        xbmcvfs.copy( "https://dummyimage.com/16/%s/%s.png" % (colorstring[2:],colorstring[2:]), color_image_file )
+                        log_msg("Local PIL module not available, generating color swatch image with online service", xbmc.LOGWARNING)
         return color_image_file
 
     @staticmethod
