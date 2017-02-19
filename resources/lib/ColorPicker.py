@@ -310,6 +310,7 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
 
     def create_color_swatch_image(self, colorstring):
         '''helper method to generate a colorized image using PIL'''
+        color_image_file = None
         if colorstring:
             paths = []
             paths.append(u"%s%s.png" % (COLORFILES_PATH, colorstring))
