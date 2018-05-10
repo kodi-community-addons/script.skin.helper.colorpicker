@@ -8,7 +8,9 @@
     <extension point="xbmc.python.library" library="default.py" />
 	<extension point="xbmc.addon.metadata">
 		<summary lang="en">Colorpicker for Kodi Skins. Part of Skin Helper Suite</summary>
-        <description>Colorpicker for Kodi Skins. Part of Skin Helper Suite</description>
+    <summary lang="sk">Volič farieb pre vzhľady Kodi. Ju súčasťou balíka Skin Helper Suite</summary>
+    <description>Colorpicker for Kodi Skins. Part of Skin Helper Suite</description>
+    <description lang="sk">Volič farieb pre vzhľady Kodi. Ju súčasťou balíka Skin Helper Suite</description>
 		<language></language>
 		<platform>all</platform>
 		<license>GPL v2.0</license>
