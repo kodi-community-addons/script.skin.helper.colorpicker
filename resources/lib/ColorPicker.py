@@ -1,19 +1,16 @@
 from xml.dom.minidom import parse
-import xbmc
-import xbmcgui
-import xbmcaddon
-import xbmcvfs
 import os
 import sys
 import math
 from traceback import format_exc
+from kodi_six import xbmc, xbmcaddon, xbmcgui, xbmcvfs
 
 ADDON_ID = "script.skin.helper.colorpicker"
 ADDON = xbmcaddon.Addon(ADDON_ID)
-ADDON_PATH = ADDON.getAddonInfo('path').decode("utf-8")
-COLORFILES_PATH = xbmc.translatePath("special://profile/addon_data/%s/colors/" % ADDON_ID).decode("utf-8")
-SKINCOLORFILES_PATH = xbmc.translatePath("special://profile/addon_data/%s/colors/" % xbmc.getSkinDir()).decode("utf-8")
-SKINCOLORFILE = xbmc.translatePath("special://skin/extras/colors/colors.xml").decode("utf-8")
+ADDON_PATH = ADDON.getAddonInfo('path')
+COLORFILES_PATH = xbmc.translatePath("special://profile/addon_data/%s/colors/" % ADDON_ID)
+SKINCOLORFILES_PATH = xbmc.translatePath("special://profile/addon_data/%s/colors/" % xbmc.getSkinDir())
+SKINCOLORFILE = xbmc.translatePath("special://skin/extras/colors/colors.xml")
 WINDOW = xbmcgui.Window(10000)
 SUPPORTS_PIL = False
 
@@ -22,8 +19,6 @@ SUPPORTS_PIL = False
 
 def log_msg(msg, level=xbmc.LOGDEBUG):
     '''log message to kodi log'''
-    if isinstance(msg, unicode):
-        msg = msg.encode('utf-8')
     xbmc.log("Skin Helper Service ColorPicker --> %s" % msg, level=level)
 
 
@@ -97,8 +92,11 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
 
     def add_color_to_list(self, colorname, colorstring):
         '''adds the coloroption as listitem to the list'''
+        if not colorname:
+            colorname = colorstring
         color_image_file = self.create_color_swatch_image(colorstring)
-        listitem = xbmcgui.ListItem(label=colorname, iconImage=color_image_file)
+        listitem = xbmcgui.ListItem(label=colorname)
+        listitem.setArt({'icon': color_image_file})
         listitem.setProperty("colorstring", colorstring)
         self.colors_list.addItem(listitem)
 
@@ -113,7 +111,7 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
             colors_file = SKINCOLORFILE
             self.colors_path = SKINCOLORFILES_PATH
         else:
-            colors_file = os.path.join(ADDON_PATH, 'resources', 'colors', 'colors.xml').decode("utf-8")
+            colors_file = os.path.join(ADDON_PATH, 'resources', 'colors', 'colors.xml')
             self.colors_path = COLORFILES_PATH
 
         doc = parse(colors_file)
@@ -146,7 +144,7 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
 
     def onInit(self):
         '''Called after initialization, get all colors and build the listing'''
-        xbmc.executebuiltin("ActivateWindow(busydialog)")
+        xbmc.executebuiltin("ActivateWindow(busydialognocancel)")
         self.current_window = xbmcgui.Window(xbmcgui.getCurrentWindowDialogId())
         self.colors_list = self.getControl(3110)
         # set header_label
@@ -191,7 +189,7 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
         if self.current_window.getProperty("colorstring"):
             self.set_opacity_slider()
 
-        xbmc.executebuiltin("Dialog.Close(busydialog)")
+        xbmc.executebuiltin("Dialog.Close(busydialognocancel)")
 
     def onFocus(self, controlId):
         '''builtin kodi event'''
