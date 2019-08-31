@@ -158,7 +158,6 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
     def onInit(self):
         '''Called after initialization, get all colors and build the listing'''
         with busy_dialog():
-            xbmc.executebuiltin("ActivateWindow(busydialognocancel)")
             self.current_window = xbmcgui.Window(xbmcgui.getCurrentWindowDialogId())
             self.colors_list = self.getControl(3110)
             # set header_label
@@ -262,7 +261,6 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
 
     def onClick(self, controlID):
         '''builtin kodi event - handle onclick and execute correct action'''
-        log_msg(controlID)
         if controlID == 3110:
             # color clicked
             item = self.colors_list.getSelectedItem()
@@ -290,8 +288,6 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
         if controlID == 3012 or controlID == 3011:
             # save button clicked or none
             if self.skinstring or self.win_property:
-                log_msg(self.skinstring)
-                log_msg(self.win_property)
                 self.close_dialog()
             elif self.shortcut_property:
                 self.result = (self.current_window.getProperty("colorstring"),
