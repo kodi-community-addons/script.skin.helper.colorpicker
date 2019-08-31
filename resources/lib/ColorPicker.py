@@ -19,8 +19,7 @@ PYTHON3 = True if sys.version_info.major == 3 else False
 # HELPERS ###########################################
 
 
-#def log_msg(msg, level=xbmc.LOGDEBUG):
-def log_msg(msg, level=xbmc.LOGNOTICE):
+def log_msg(msg, level=xbmc.LOGDEBUG):
     '''log message to kodi log'''
     xbmc.log("Skin Helper Service ColorPicker --> %s" % msg, level=level)
 
