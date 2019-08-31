@@ -14,6 +14,7 @@ SKINCOLORFILES_PATH = xbmc.translatePath("special://profile/addon_data/%s/colors
 SKINCOLORFILE = xbmc.translatePath("special://skin/extras/colors/colors.xml")
 WINDOW = xbmcgui.Window(10000)
 SUPPORTS_PIL = False
+PYTHON3 = True if sys.version_info.major == 3 else False
 
 # HELPERS ###########################################
 
@@ -31,6 +32,8 @@ def log_exception(modulename, exceptiondetails):
 
 def try_encode(text, encoding="utf-8"):
     '''helper method'''
+    if PYTHON3:
+        return text
     try:
         return text.encode(encoding, "ignore")
     except Exception:
@@ -89,7 +92,7 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
     active_palette = None
 
     def __init__(self, *args, **kwargs):
-        xbmcgui.WindowXMLDialog.__init__(self, *args, **kwargs)
+        super(xbmcgui.WindowXMLDialog, self).__init__()
         self.action_exitkeys_id = [10, 13]
         self.win = xbmcgui.Window(10000)
         self.build_colors_list()
