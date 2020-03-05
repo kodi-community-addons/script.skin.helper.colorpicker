@@ -2,8 +2,11 @@ from xml.dom.minidom import parse
 import os
 import sys
 import math
+import xbmc
+import xbmcaddon
+import xbmcgui
+import xbmcvfs
 from traceback import format_exc
-from kodi_six import xbmc, xbmcaddon, xbmcgui, xbmcvfs
 from contextlib import contextmanager
 
 ADDON_ID = "script.skin.helper.colorpicker"
@@ -27,16 +30,6 @@ def log_msg(msg, level=xbmc.LOGDEBUG):
 def log_exception(modulename, exceptiondetails):
     '''helper to properly log an exception'''
     log_msg("Exception in %s ! --> %s" % (modulename, exceptiondetails), xbmc.LOGERROR)
-
-
-def try_encode(text, encoding="utf-8"):
-    '''helper method'''
-    if PYTHON3:
-        return text
-    try:
-        return text.encode(encoding, "ignore")
-    except Exception:
-        return text
 
 
 @contextmanager
@@ -237,24 +230,24 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
         else:
             colorname = self.current_window.getProperty("colorname")
             colorstring = self.current_window.getProperty("colorstring")
+
         if not colorname:
             colorname = colorstring
+
         self.create_color_swatch_image(colorstring)
+
         if self.skinstring and (not colorstring or colorstring == "None"):
-            xbmc.executebuiltin("Skin.SetString(%s.name, %s)"
-                                % (try_encode(self.skinstring), try_encode(ADDON.getLocalizedString(32013))))
-            xbmc.executebuiltin("Skin.SetString(%s, None)"
-                                % try_encode(self.skinstring))
-            xbmc.executebuiltin("Skin.Reset(%s.base)"
-                                % try_encode(self.skinstring))
+            xbmc.executebuiltin("Skin.SetString(%s.name, %s)" % (self.skinstring, ADDON.getLocalizedString(32013)))
+            xbmc.executebuiltin("Skin.SetString(%s, None)" % self.skinstring)
+            xbmc.executebuiltin("Skin.Reset(%s.base)" % self.skinstring)
+
         elif self.skinstring and colorstring:
-            xbmc.executebuiltin("Skin.SetString(%s.name, %s)"
-                                % (try_encode(self.skinstring), try_encode(colorname)))
+            xbmc.executebuiltin("Skin.SetString(%s.name, %s)" % (self.skinstring, colorname))
+            xbmc.executebuiltin("Skin.SetString(%s, %s)" % (self.skinstring, colorstring))
+
             colorbase = "ff" + colorstring[2:]
-            xbmc.executebuiltin("Skin.SetString(%s, %s)"
-                                % (try_encode(self.skinstring), try_encode(colorstring)))
-            xbmc.executebuiltin("Skin.SetString(%s.base, %s)"
-                                % (try_encode(self.skinstring), try_encode(colorbase)))
+            xbmc.executebuiltin("Skin.SetString(%s.base, %s)" % (self.skinstring), colorbase)
+
         elif self.win_property:
             WINDOW.setProperty(self.win_property, colorstring)
             WINDOW.setProperty(self.win_property + ".name", colorname)
