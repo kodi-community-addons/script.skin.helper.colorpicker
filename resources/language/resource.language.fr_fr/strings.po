@@ -40,3 +40,20 @@ msgstr "Couleur personnalisée"
 msgctxt "#32141"
 msgid "Color Palette"
 msgstr "Palette de couleurs"
+
+msgctxt "#32142"
+msgid "Basic"
+msgstr "De Base"
+
+msgctxt "#32143"
+msgid "Rainbow"
+msgstr "Arc-En-Ciel"
+
+msgctxt "#32144"
+msgid "Material-Design"
+msgstr "Conception Matérielle"
+
+msgctxt "#32145"
+msgid "Webcolors"
+msgstr "Couleurs Web"
+
