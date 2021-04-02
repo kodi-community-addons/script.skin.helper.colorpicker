@@ -12,9 +12,9 @@ from contextlib import contextmanager
 ADDON_ID = "script.skin.helper.colorpicker"
 ADDON = xbmcaddon.Addon(ADDON_ID)
 ADDON_PATH = ADDON.getAddonInfo('path')
-COLORFILES_PATH = xbmc.translatePath("special://profile/addon_data/%s/colors/" % ADDON_ID)
-SKINCOLORFILES_PATH = xbmc.translatePath("special://profile/addon_data/%s/colors/" % xbmc.getSkinDir())
-SKINCOLORFILE = xbmc.translatePath("special://skin/extras/colors/colors.xml")
+COLORFILES_PATH = xbmcvfs.translatePath("special://profile/addon_data/%s/colors/" % ADDON_ID)
+SKINCOLORFILES_PATH = xbmcvfs.translatePath("special://profile/addon_data/%s/colors/" % xbmc.getSkinDir())
+SKINCOLORFILE = xbmcvfs.translatePath("special://skin/extras/colors/colors.xml")
 WINDOW = xbmcgui.Window(10000)
 SUPPORTS_PIL = False
 PYTHON3 = True if sys.version_info.major == 3 else False
