@@ -217,7 +217,7 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
             if colorstring != "" and colorstring is not None and colorstring.lower() != "none":
                 a, r, g, b = colorstring[:2], colorstring[2:4], colorstring[4:6], colorstring[6:]
                 a, r, g, b = [int(n, 16) for n in (a, r, g, b)]
-                a = 100.0 * a / 255
+                a = 100.0 * a // 255
                 self.getControl(3015).setPercent(float(a))
         except Exception:
             pass
@@ -246,7 +246,7 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
             xbmc.executebuiltin("Skin.SetString(%s, %s)" % (self.skinstring, colorstring))
 
             colorbase = "ff" + colorstring[2:]
-            xbmc.executebuiltin("Skin.SetString(%s.base, %s)" % (self.skinstring), colorbase)
+            xbmc.executebuiltin("Skin.SetString(%s.base, %s)" % (self.skinstring, colorbase))
 
         elif self.win_property:
             WINDOW.setProperty(self.win_property, colorstring)
@@ -292,7 +292,7 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
                 # opacity slider
                 colorstring = self.current_window.getProperty("colorstring")
                 opacity = self.getControl(3015).getPercent()
-                num = opacity / 100.0 * 255
+                num = opacity // 100.0 * 255
                 e = num - math.floor(num)
                 a = e < 0.5 and int(math.floor(num)) or int(math.ceil(num))
                 colorstring = colorstring.strip()
@@ -315,7 +315,7 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
         color_image_file = None
         if colorstring:
             paths = []
-            paths.append(u"%s%s.png" % (COLORFILES_PATH, colorstring))
+            paths.append("%s%s.png" % (COLORFILES_PATH, colorstring))
             if xbmcvfs.exists(SKINCOLORFILE):
                 paths.append(u"%s%s.png" % (SKINCOLORFILES_PATH, colorstring))
             for color_image_file in paths:
