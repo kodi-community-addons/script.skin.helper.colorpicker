@@ -40,3 +40,19 @@ msgstr "Color Personalizado"
 msgctxt "#32141"
 msgid "Color Palette"
 msgstr "Paleta de Colores"
+
+msgctxt "#32142"
+msgid "Basic"
+msgstr "Básica"
+
+msgctxt "#32143"
+msgid "Rainbow"
+msgstr "Arcoíris"
+
+msgctxt "#32144"
+msgid "Material-Design"
+msgstr "Diseño de Materiales"
+
+msgctxt "#32145"
+msgid "Webcolors"
+msgstr "Webcolors"
