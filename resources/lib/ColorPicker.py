@@ -217,7 +217,7 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
             if colorstring != "" and colorstring is not None and colorstring.lower() != "none":
                 a, r, g, b = colorstring[:2], colorstring[2:4], colorstring[4:6], colorstring[6:]
                 a, r, g, b = [int(n, 16) for n in (a, r, g, b)]
-                a = 100.0 * a // 255
+                a = 100.0 * a / 255
                 self.getControl(3015).setPercent(float(a))
         except Exception:
             pass
@@ -292,7 +292,7 @@ class ColorPicker(xbmcgui.WindowXMLDialog):
                 # opacity slider
                 colorstring = self.current_window.getProperty("colorstring")
                 opacity = self.getControl(3015).getPercent()
-                num = opacity // 100.0 * 255
+                num = opacity / 100.0 * 255
                 e = num - math.floor(num)
                 a = e < 0.5 and int(math.floor(num)) or int(math.ceil(num))
                 colorstring = colorstring.strip()
